@@ -3,9 +3,9 @@
       "scripts": ["background.js", "storage.js"],
       "persistent": false
    },
-   "manifest_version": 2,
+   "manifest_version": 3,
    "description": "Open bookmarks based on the keyword, which is defined as part of the bookmark title. e.g. [g] Google Search",
-   "name": "Bookmark Keyword",
+   "name": "Bookmark Keyword (kda)",
    "options_page": "options.html",
    "icons": {
       "16": "images/icon16.png",
@@ -16,5 +16,5 @@
       "keyword": "kw"
    },
    "permissions": [ "bookmarks", "tabs"],
-   "version": "1.6"
+   "version": "1.6.1"
 }
