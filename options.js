@@ -1,15 +1,15 @@
 window.onload = function() {
-	loadOptions();
+  loadOptions();
 
-	$("saveBtn").addEventListener('click', save);
+  $("saveBtn").addEventListener('click', save);
 
-	var helpElements = document.getElementsByClassName("help");
+  var helpElements = document.getElementsByClassName("help");
 
-	for(var i = 0; i < helpElements.length; i++) {
-		helpElements[i].addEventListener('click', function() {
-			this.addEventListener('click', showHelp(this.id.substring(1)));	
-		});
-	}
+  for(var i = 0; i < helpElements.length; i++) {
+    helpElements[i].addEventListener('click', function() {
+      this.addEventListener('click', showHelp(this.id.substring(1)));
+    });
+  }
 }
 
 var MAX_DEPTH = 5;
@@ -23,7 +23,7 @@ function save() {
     storage.set(storage.REG_EXP_OPT_KEY, $("regexpcase").checked);
     storage.set(storage.NEW_TAB_KEY, $("newtab").checked);
     storage.set(storage.DEPTH_KEY, parseInt($("maxDepth").value));
-    
+
     window.close();
 }
 
@@ -32,7 +32,7 @@ function loadOptions() {
     var reCase = storage.get(storage.REG_EXP_OPT_KEY);
     var newTab = storage.get(storage.NEW_TAB_KEY);
     var maxDepth = storage.get(storage.DEPTH_KEY, 5);
-    
+
     $("regexp").value = (re ? re : storage.DEFAULT_REGEXP);
     $("regexpcase").checked = (reCase == "true" ? true : false);
     $("newtab").checked = (newTab == "true" ? true : false);

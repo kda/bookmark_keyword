@@ -42,7 +42,7 @@ var kwSearch = {
         return bookmarks.map(function (bookmark){
             var t = bookmark.title;
             var re = new RegExp("(" + text + ")");
-            
+
             return {
                 content: bookmark.url,
                 description: 'Open ' + (re.test(t) ? t.replace(re, '<match>' + RegExp.$1 +'</match>') : '<match>' + t + '</match>')
@@ -53,14 +53,14 @@ var kwSearch = {
     getRegExp: function(text) {
         var regExp = storage.get(storage.REG_EXP_KEY);
         var reCase = storage.get(storage.REG_EXP_OPT_KEY);
-    
+
         if (reCase != "true") {
             reCase = "i";
         } else {
             reCase = null;
         }
         var r = new RegExp(storage.DEFAULT_REGEXP.replace(/%s/g, text), reCase);
-    
+
         if (regExp) {
             r = new RegExp(regExp.replace(/%s/g, text), reCase);
         }
@@ -128,7 +128,7 @@ chrome.omnibox.onInputEntered.addListener(function (text) {
     if (/(^http:|^https:|^javascript:|^ftp:|^file:)/.test(text)) {
         kwSearch.loadUrl(text, options);
     }
-    
+
     kwSearch.findBookmarks(kwSearch.getRegExp(text), text, function (results) {
         if (results.length > 0) {
             kwSearch.loadUrl(results[0].url, options);
