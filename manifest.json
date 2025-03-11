@@ -1,11 +1,12 @@
 {
+   "manifest_version": 3,
+   "name": "Keyword Bookmarks",
+   "version": "0.0.1",
+   "description": "Open bookmarks based on the keyword, which is defined as part of the bookmark title. e.g. [g] Google Search",
    "background": {
       "scripts": ["background.js", "storage.js"],
       "persistent": false
    },
-   "manifest_version": 3,
-   "description": "Open bookmarks based on the keyword, which is defined as part of the bookmark title. e.g. [g] Google Search",
-   "name": "Bookmark Keyword (kda)",
    "options_page": "options.html",
    "icons": {
       "16": "images/icon16.png",
@@ -15,7 +16,5 @@
    "omnibox": {
       "keyword": "kw"
    },
-   "permissions": [ "bookmarks", "tabs"],
-   "version": "1.6.1",
-   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs8wiwzvpbAdK5eMfIofO0aKo9lOZ0XUOdzOGJzgvVs0EWavUvzhu5BQwT4yr4+RmjSog2GVMnVnYA0pz2V5TMuZzxt9VD9FLRKL/IBM2GImnmKmBgee0jRVmJkGXvxyy9g9ruj/0TfE4S4GzEwD6ckT85mWEmY1eUuH2Z+LNScBvtj7ckpSeA98sc7MhRBBFJdcrlG+AAvf4MyYzJyswoUt6MSyJybu3nyNQLeNvPbntWxwOwokfxZ8YHZQUzdMfm7VDAV8LVGbmwYFTWnSXxkj4wkmRn2uIqzDr9Dnb7NxySFLFiZGx+mf9vrXtVx6vAs+7AvocK8r+lAUghGLcfQIDAQAB"
+   "permissions": [ "bookmarks", "tabs"]
 }
