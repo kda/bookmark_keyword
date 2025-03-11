@@ -1,13 +1,57 @@
+// import './storage.js'
+
 var CMD_REG_EXP = /:([ptwi]{1,})$/;
+
+var storage = {
+    USE_COUNT_KEY: "use_count",
+    DEPTH_KEY: "depth",
+    NEW_TAB_KEY: "newtab",
+    REG_EXP_KEY: "regexp",
+    REG_EXP_OPT_KEY: "regexp_opt",
+    DEFAULT_REGEXP: "^\\\[%s.*\\\]",
+
+    get: function(key, defaultValue) {
+        console.log(`key: ${key}  defaultValue: ${defaultValue}`);
+        if (defaultValue != null || defaultValue != "undefined") {
+            // return localStorage[key] || defaultValue;
+            return chrome.storage.local.get(key) || defaultValue;
+        } else {
+            // return localStorage[key];
+            return chrome.storage.local.get(key);
+          // var retval = undefined;
+
+          //   chrome.storage.local.get(key, function() {
+          //     promise.then(
+          //                  function(value) {retval = value;}
+          //     )
+          //   }
+          //   );
+          // return retval;
+        }
+    },
+
+    set: function(key, value) {
+        // localStorage[key] = value;
+        chrome.storage.local.set({key: value});
+    }
+
+};
+
 
 var kwSearch = {
     findBookmarks: function (regex, text, callback) {
+        console.log("findBookmarks: enter");
 
-        var maxDepth = storage.get(storage.DEPTH_KEY) || 5;
+        // var maxDepth = storage.get(storage.DEPTH_KEY) || 5;
+        let maxDepth = 5;
+        //var maxDepth = storage.get(storage.DEPTH_KEY) || 5;
         var results = [];
 
+      console.log(`findBookmarks: text ${text}`)
+      console.log(`findBookmarks: maxDepth ${maxDepth}`)
         chrome.bookmarks.search(text, function (matched) {
             for (var i = 0; i < matched.length && results.length < maxDepth; i++) {
+              console.log(`findBookmarks: i ${i} matched[i].title ${matched[i].title}`)
                 if(matched[i].title && regex.test(matched[i].title)) {
                     results.push(matched[i]);
                 }
@@ -19,17 +63,31 @@ var kwSearch = {
     loadUrl: function (url, options) {
         var newTab = storage.get(storage.NEW_TAB_KEY);
 
+      console.log(`loadUrl: url ${url}`);
         if (options.window) {
-            chrome.windows.create({url: url, incognito: options.incognito});
+            chrome.windows.create({url: url});
         }
 
-        chrome.tabs.getSelected(null, function (tab) {
-            if (tab != null && newTab != "true" && options.tab != true || tab.url == "chrome://newtab/") {
-                chrome.tabs.update(tab.id, {url: url, pinned: options.pinned, selected: true});
-            } else {
-                chrome.tabs.create({url: url, pinned: options.pinned, selected: true});
-            }
-        });
+      let queryOptions = {active: true, lastFocusedWindow: true};
+      chrome.tabs.query(queryOptions, ([tab]) => {
+        console.log(`loadUrl: tab.id ${tab.id}`);
+        chrome.tabs.update(tab.id, {url: url, pinned: options.pinned, selected: true});
+      });
+      //console.log("loadUrl: pre-getCurrent");
+      //chrome.tabs.getCurrent(function(tab) {
+      //  console.log("loadUrl: tab: " + JSON.stringify(tab));
+      //  if (tab != null) {
+      //    console.log(`loadUrl: tab.id ${tab.id}`);
+      //    chrome.tabs.update(tab.id, {url: url, pinned: options.pinned, selected: true});
+      //  }
+      //});
+        //chrome.tabs.getSelected(null, function (tab) {
+        //    if (tab != null && newTab != "true" && options.tab != true || tab.url == "chrome://newtab/") {
+        //        chrome.tabs.update(tab.id, {url: url, pinned: options.pinned, selected: true});
+        //    } else {
+        //        chrome.tabs.create({url: url, pinned: options.pinned, selected: true});
+        //    }
+        //});
         kwSearch.updateCount();
     },
 
@@ -61,9 +119,17 @@ var kwSearch = {
         }
         var r = new RegExp(storage.DEFAULT_REGEXP.replace(/%s/g, text), reCase);
 
-        if (regExp) {
-            r = new RegExp(regExp.replace(/%s/g, text), reCase);
+      console.log(`regExp: ${regExp}`);
+        //if (regExp) {
+        //    r = new RegExp(regExp.replace(/%s/g, text), reCase);
+        //}
+      regExp.then(function(value) {
+        console.log(`value: ${value}`);
+        console.log("value: " + JSON.stringify(value));
+        if (Object.keys(value).length != 0) {
+          r = new RegExp(value.replace(/%s/g, text), reCase);
         }
+      })
 
         return r;
     },
@@ -81,28 +147,6 @@ var kwSearch = {
             return {};
         }
     }
-};
-
-var storage = {
-    USE_COUNT_KEY: "use_count",
-    DEPTH_KEY: "depth",
-    NEW_TAB_KEY: "newtab",
-    REG_EXP_KEY: "regexp",
-    REG_EXP_OPT_KEY: "regexp_opt",
-    DEFAULT_REGEXP: "^\\\[%s.*\\\]",
-
-    get: function(key, defaultValue) {
-        if (defaultValue != null || defaultValue != "undefined") {
-            return localStorage[key] || defaultValue;
-        } else {
-            return localStorage[key];
-        }
-    },
-
-    set: function(key, value) {
-        localStorage[key] = value;
-    }
-
 };
 
 chrome.omnibox.onInputChanged.addListener(function (text, suggest) {
